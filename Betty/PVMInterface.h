@@ -7,3 +7,4 @@ void spinLiftFan();
 void setServoAngle(int angle);
 void setServoPin(int value);
 void spinThrustFan();
+void moveForward();

@@ -12,31 +12,38 @@ void setup() {
   hovercraft.leftSensor = createSensor(PD3);
   hovercraft.rightSensor = createSensor(PD4);
   initPVM();
-  initIMU();
-  delay(3000);
-  updateIMU();
-  hovercraft.yaw = 0;
+  //initIMU();
+  //delay(3000);
+  //updateIMU();
+  //hovercraft.yaw = 0;
 }
 
 void loop() {
   updateSensorDistance(&hovercraft.leftSensor);
   updateSensorDistance(&hovercraft.rightSensor);
-  updateIMU();
-  float currentYaw = getGyroYaw() + 180.0;
-  float deltaYaw = currentYaw - hovercraft.lastYaw;
-  float inverseDeltaYaw = 360.0 - deltaYaw;
-  hovercraft.yaw += deltaYaw < inverseDeltaYaw ? deltaYaw : inverseDeltaYaw;
-  Serial.print("Yaw: ");
-  Serial.println(hovercraft.yaw);
-  // delay(500);
+
+  // updateIMU();
+  // float currentYaw = getGyroYaw() + 180.0;
+  // float deltaYaw = currentYaw - hovercraft.lastYaw;
+  // float inverseDeltaYaw = 360.0 - deltaYaw;
+  // hovercraft.yaw += deltaYaw < inverseDeltaYaw ? deltaYaw : inverseDeltaYaw;
+  // Serial.print("Yaw: ");
+  // Serial.println(hovercraft.yaw);
+  // hovercraft.lastYaw = currentYaw;
+
   // Serial.print("Left Sensor: ");
   // Serial.print(hovercraft.leftSensor.distanceCM);
   // Serial.println(" (CM)");
   // Serial.print("Right Sensor: ");
   // Serial.print(hovercraft.rightSensor.distanceCM);
   // Serial.println(" (CM)");
+
+  //Move forward
+  setServoAngle(90);
   
+
   // spinLiftFan();
   // spinThrustFan();
-  hovercraft.lastYaw = currentYaw;
+  delay(500);
+
 }
