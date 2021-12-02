@@ -1,9 +1,11 @@
 #include "Arduino.h"
 #include <arduino-timer.h>
 #include "PVMInterface.h"
+#include "sensor.h"
+
 
 uint16_t icr = 0xffff;
-bool turning = false;
+
 
 void initPVM() {
   DDRB  |= _BV(PB1) | _BV(PB2);       /* set pins as outputs */
@@ -13,6 +15,8 @@ void initPVM() {
         | _BV(CS11);                  /* prescaler 1 */
   ICR1 = icr;                         /* TOP counter value (freeing OCR1A*/
   auto timer = timer_create_default(); //create a timer instance *timer*
+  hovercraft.leftSensor = createSensor(PD3);
+  hovercraft.rightSensor = createSensor(PD4);
 }
 void spinThrustFan() {
   analogWrite(THRUST_FAN_PIN, 200);
@@ -33,7 +37,7 @@ void spinLiftFan() {
 }
 
 void moveForward(){
-  turning=false;
+  if (turning) return;
   setServoAngle(90);
   delay(100);
   spinLiftFan();
@@ -47,6 +51,21 @@ void stabilize(){
 }
 
 void turn(){
-  setServoAngle(135);
-  turning=true;
+  if (turning){
+    setServoAngle(135);
+  }
+}
+
+void stopTurn(){
+  turning=false;
+  moveForward();
+}
+
+void checkSensors(){
+  updateSensorDistance(&hovercraft.leftSensor);
+  updateSensorDistance(&hovercraft.rightSensor);
+  if (hovercraft.rightSensor.distanceCM < thresholdDist){
+    turning = true;
+    turn();
+  }
 }
