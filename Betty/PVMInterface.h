@@ -8,3 +8,5 @@ void setServoAngle(int angle);
 void setServoPin(int value);
 void spinThrustFan();
 void moveForward();
+void stabilize();
+void turn();
