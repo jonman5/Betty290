@@ -87,17 +87,17 @@ void stopTurn(){
   moveForward();
 }
 
-bool checkSensors(bool turnRight){
+bool checkSensors(bool turnToRight){
   updateSensorDistance(&hovercraft.leftSensor);
   updateSensorDistance(&hovercraft.rightSensor);
-  if (turnRight && (hovercraft.rightSensor.distanceCM > thresholdDist)){
+  if (turnToRight && (hovercraft.rightSensor.distanceCM > thresholdDist)){
     //if next turn is right and right sensor does not see a wall within thresholdDist, turn right
     turning = true;
     Serial.println("Turning");
     turnRight();
     return true;
   }
-  else if (!turnRight && (hovercraft.leftSensor.distanceCM > thresholdDist)){
+  else if (!turnToRight && (hovercraft.leftSensor.distanceCM > thresholdDist)){
     //if next turn is not right and left sensor does not see a wall within thresholdDist, turn left
     turning = true;
     Serial.println("Turning");

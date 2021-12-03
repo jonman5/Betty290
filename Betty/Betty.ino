@@ -39,7 +39,7 @@ void loop() {
     }
     resetTimer();
   }
-  if (checkSensors()){ //checks sensors, and checks if turn was executed
+  if (checkSensors(nextTurnRight)){ //checks sensors, and checks if turn was executed
     nextTurnRight = (!nextTurnRight); //flip next turn direction
     resetTimer();
   }

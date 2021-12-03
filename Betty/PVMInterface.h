@@ -14,6 +14,6 @@ bool moveForward();
 bool stabilize();
 void turnRight();
 void turnLeft();
-bool checkSensors();
+bool checkSensors(bool turnToRight);
 void stopTurn();
 bool getTurning();
