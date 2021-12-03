@@ -8,7 +8,7 @@ struct Hovercraft {
 
 bool stabilizing = false;
 bool turning = false;
-float thresholdDist = 17;
+float thresholdDist = 25;
 
 uint16_t icr = 0xffff;
 
@@ -62,40 +62,49 @@ bool stabilize(){
   stabilizing = true;
   Serial.println("Stabilizing now.");
   return true;
-  
+
 
 }
 
-bool turn(){
+void turnRight(){
   if (turning){
-    setServoAngle(135);
+    setServoAngle(150);
   }
-  // unsigned long turnTimer = millis();
-  // unsigned long curTime = millis();  
-  // while (curTime - turnTimer < 2000){ //wait (turn) for 2000 seconds
-  //   curTime = millis();
-  // }
-  delay(3500);  
+  delay(4000);
   stopTurn();
-  return true;
 }
 
-bool stopTurn(){
+void turnLeft(){
+  if (turning){
+    setServoAngle(30);
+  }
+  delay(4000);
+  stopTurn();
+}
+
+void stopTurn(){
   turning=false;
   moveForward();
-  return false;
 }
 
-bool checkSensors(){
-  if (turning) return true;
+bool checkSensors(bool turnRight){
   updateSensorDistance(&hovercraft.leftSensor);
   updateSensorDistance(&hovercraft.rightSensor);
-  if (hovercraft.rightSensor.distanceCM < thresholdDist){
+  if (turnRight && (hovercraft.rightSensor.distanceCM > thresholdDist)){
+    //if next turn is right and right sensor does not see a wall within thresholdDist, turn right
     turning = true;
     Serial.println("Turning");
-    turn();
+    turnRight();
+    return true;
   }
-  return true;
+  else if (!turnRight && (hovercraft.leftSensor.distanceCM > thresholdDist)){
+    //if next turn is not right and left sensor does not see a wall within thresholdDist, turn left
+    turning = true;
+    Serial.println("Turning");
+    turnLeft();
+    return true;
+  }
+  return false; //no turn was executed, return false
 }
 bool getTurning(){
   return turning;
