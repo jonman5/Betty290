@@ -8,7 +8,8 @@ struct Hovercraft {
 
 bool stabilizing = false;
 bool turning = false;
-float thresholdDist = 25;
+float thresholdSideDist = 70;
+float thresholdFrontDist = 70;
 
 uint16_t icr = 0xffff;
 
@@ -23,8 +24,8 @@ void initPVM() {
   hovercraft.leftSensor = createSensor(PD3);
   hovercraft.rightSensor = createSensor(PD4);
 }
-void spinThrustFan() {
-  analogWrite(THRUST_FAN_PIN, 200);
+void spinThrustFan(int speed) { //Speed is 0-255
+  analogWrite(THRUST_FAN_PIN, speed);
 }
 
 void setServoAngle(int angle) {
@@ -42,8 +43,9 @@ void spinLiftFan() {
 }
 
 bool moveForward(){
-  if (turning) return true;
+  if (turning) return true;  
   setServoAngle(90);
+  spinThrustFan(195);
   Serial.println("Moving forward now.");
   //delay(100);
   //spinLiftFan();
@@ -62,21 +64,19 @@ bool stabilize(){
   stabilizing = true;
   Serial.println("Stabilizing now.");
   return true;
-
-
 }
 
 void turnRight(){
   if (turning){
-    setServoAngle(150);
+    setServoAngle(10);
   }
-  delay(4000);
+  delay(1500);
   stopTurn();
 }
 
 void turnLeft(){
   if (turning){
-    setServoAngle(30);
+    setServoAngle(170);
   }
   delay(4000);
   stopTurn();
@@ -90,20 +90,36 @@ void stopTurn(){
 bool checkSensors(bool turnToRight){
   updateSensorDistance(&hovercraft.leftSensor);
   updateSensorDistance(&hovercraft.rightSensor);
-  if (turnToRight && (hovercraft.rightSensor.distanceCM > thresholdDist)){
+  // Serial.print("Left Sensor: ");
+  // Serial.print(hovercraft.leftSensor.distanceCM);
+  // Serial.println(" (CM)");
+  // Serial.print("Right Sensor: ");
+  // Serial.print(hovercraft.rightSensor.distanceCM);
+  // Serial.println(" (CM)");
+  // delay(1000);
+  if ( (hovercraft.leftSensor.distanceCM < thresholdFrontDist )){
     //if next turn is right and right sensor does not see a wall within thresholdDist, turn right
+    if ((hovercraft.leftSensor.distanceCM > 180)){
+      return false;
+    }
     turning = true;
-    Serial.println("Turning");
+    Serial.println("Turning Right");
+    spinThrustFan(165); //reduce thrust speed before turn
+    delay(1000);
+    turnRight();
+    setServoAngle(90);
+    delay (800);
     turnRight();
     return true;
   }
-  else if (!turnToRight && (hovercraft.leftSensor.distanceCM > thresholdDist)){
-    //if next turn is not right and left sensor does not see a wall within thresholdDist, turn left
-    turning = true;
-    Serial.println("Turning");
-    turnLeft();
-    return true;
-  }
+  // else if (!turnToRight && (hovercraft.leftSensor.distanceCM > thresholdDist)){
+  //   //if next turn is not right and left sensor does not see a wall within thresholdDist, turn left
+  //   turning = true;
+  //   Serial.println("Turning Left");
+  //   spinThrustFan(150);
+  //   turnLeft();
+  //   return true;
+  // }
   return false; //no turn was executed, return false
 }
 bool getTurning(){

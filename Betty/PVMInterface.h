@@ -8,7 +8,7 @@ void initPVM();
 void spinLiftFan();
 void setServoAngle(int angle);
 void setServoPin(int value);
-void spinThrustFan();
+void spinThrustFan(int speed);
 void start();
 bool moveForward();
 bool stabilize();

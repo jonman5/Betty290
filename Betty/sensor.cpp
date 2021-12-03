@@ -30,21 +30,21 @@ Sensor createSensor(int pinID) {
   return sensor;
 }
 void updateSensorDistance(Sensor *sensor) {
-  // int const BUFFER_SIZE = 8;
-  // unsigned long buffer[BUFFER_SIZE] = {0};
-  // Get a set of samples.
-  // for(int i = 0; i < BUFFER_SIZE; i += 1) {
-  //   unsigned long const t = pulseIn(sensor->pinID, HIGH);
-  //   buffer[i] = t / 58;
-  //   delay(15);
-  // }
+  int const BUFFER_SIZE = 8;
+  unsigned long buffer[BUFFER_SIZE] = {0};
+  //Get a set of samples.
+  for(int i = 0; i < BUFFER_SIZE; i += 1) {
+    unsigned long const t = pulseIn(sensor->pinID, HIGH);
+    buffer[i] = t / 58;
+    delay(15);
+  }
 
-  // Order the samples
-  // bubbleSort(buffer, BUFFER_SIZE);
-  // int const BUFFER_CUTOUT = BUFFER_SIZE / 4;
-  // Discard the lowest and highest samples and
-  // get the average of the rest.
-  // unsigned long d = getAverage(&buffer[BUFFER_CUTOUT], BUFFER_SIZE - BUFFER_CUTOUT * 2);
-  // sensor->distanceCM = d;
-  sensor->distanceCM = pulseIn(sensor->pinID, HIGH) / 58;
+  //Order the samples
+  bubbleSort(buffer, BUFFER_SIZE);
+  int const BUFFER_CUTOUT = BUFFER_SIZE / 4;
+  //Discard the lowest and highest samples and
+  //get the average of the rest.
+  unsigned long d = getAverage(&buffer[BUFFER_CUTOUT], BUFFER_SIZE - BUFFER_CUTOUT * 2);
+  sensor->distanceCM = d;
+  //sensor->distanceCM = pulseIn(sensor->pinID, HIGH) / 58;
 }

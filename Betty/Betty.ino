@@ -1,10 +1,6 @@
 #include "IMU.h"
 #include "PVMInterface.h"
-#include "arduino-timer.h"
 
-auto timer0 = timer_create_default(); //create a timer instance *timer*
-auto timer1 = timer_create_default(); //create a timer instance *timer*
-auto timer2 = timer_create_default(); //create a timer instance *timer*
 unsigned long timer;
 bool stab = false;
 bool nextTurnRight = true;
@@ -30,12 +26,12 @@ void loop() {
     if (!stab){
       stabilize();
       stab=true;
-      time_change = 250; //stabilize for 250ms
+      time_change = 700; //stabilize for 250ms
     }
     else{
       moveForward();
       stab=false;
-      time_change = 1000; //move forward for 1000ms
+      time_change = 1500; //move forward for 1000ms
     }
     resetTimer();
   }
@@ -45,30 +41,29 @@ void loop() {
   }
 
   spinLiftFan();
-  spinThrustFan();
-//  delay(30);
+  //  delay(30);
 
 
 
-// updateSensorDistance(&hovercraft.leftSensor);
-// updateSensorDistance(&hovercraft.rightSensor);
+  // updateSensorDistance(&hovercraft.leftSensor);
+  // updateSensorDistance(&hovercraft.rightSensor);
 
-// updateIMU();
-// float currentYaw = getGyroYaw() + 180.0;
-// float deltaYaw = currentYaw - hovercraft.lastYaw;
-// float inverseDeltaYaw = 360.0 - deltaYaw;
-// hovercraft.yaw += deltaYaw < inverseDeltaYaw ? deltaYaw : inverseDeltaYaw;
-// Serial.print("Yaw: ");
-// Serial.println(hovercraft.yaw);
-// hovercraft.lastYaw = currentYaw;
+  // updateIMU();
+  // float currentYaw = getGyroYaw() + 180.0;
+  // float deltaYaw = currentYaw - hovercraft.lastYaw;
+  // float inverseDeltaYaw = 360.0 - deltaYaw;
+  // hovercraft.yaw += deltaYaw < inverseDeltaYaw ? deltaYaw : inverseDeltaYaw;
+  // Serial.print("Yaw: ");
+  // Serial.println(hovercraft.yaw);
+  // hovercraft.lastYaw = currentYaw;
 
-// Serial.print("Left Sensor: ");
-// Serial.print(hovercraft.leftSensor.distanceCM);
-// Serial.println(" (CM)");
-// Serial.print("Right Sensor: ");
-// Serial.print(hovercraft.rightSensor.distanceCM);
-// Serial.println(" (CM)");
-// delay(500);
+  // Serial.print("Left Sensor: ");
+  // Serial.print(hovercraft.leftSensor.distanceCM);
+  // Serial.println(" (CM)");
+  // Serial.print("Right Sensor: ");
+  // Serial.print(hovercraft.rightSensor.distanceCM);
+  // Serial.println(" (CM)");
+  // delay(500);
 }
 
 
