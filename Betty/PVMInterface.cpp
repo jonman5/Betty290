@@ -1,13 +1,14 @@
 #include "Arduino.h"
 #include "PVMInterface.h"
-
+#include "arduino-timer.h"
 struct Hovercraft {
   Sensor leftSensor, rightSensor;
   float yaw, lastYaw;
 } hovercraft;
 
+bool stabilizing = false;
 bool turning = false;
-float thresholdDist = 13.5;
+float thresholdDist = 17;
 
 uint16_t icr = 0xffff;
 
@@ -43,10 +44,11 @@ void spinLiftFan() {
 bool moveForward(){
   if (turning) return true;
   setServoAngle(90);
-  delay(100);
-  spinLiftFan();
-  delay(100);
-  spinThrustFan();
+  Serial.println("Moving forward now.");
+  //delay(100);
+  //spinLiftFan();
+  //delay(100);
+  //spinThrustFan();
   return true;
 }
 
@@ -56,14 +58,25 @@ void start(){
 
 bool stabilize(){
   if (turning) return true;
-  setServoAngle(60);
+  setServoAngle(110);
+  stabilizing = true;
+  Serial.println("Stabilizing now.");
   return true;
+  
+
 }
 
 bool turn(){
   if (turning){
     setServoAngle(135);
   }
+  // unsigned long turnTimer = millis();
+  // unsigned long curTime = millis();  
+  // while (curTime - turnTimer < 2000){ //wait (turn) for 2000 seconds
+  //   curTime = millis();
+  // }
+  delay(3500);  
+  stopTurn();
   return true;
 }
 
@@ -79,6 +92,7 @@ bool checkSensors(){
   updateSensorDistance(&hovercraft.rightSensor);
   if (hovercraft.rightSensor.distanceCM < thresholdDist){
     turning = true;
+    Serial.println("Turning");
     turn();
   }
   return true;

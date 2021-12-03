@@ -2,13 +2,20 @@
 #include "PVMInterface.h"
 #include "arduino-timer.h"
 
-auto timer = timer_create_default(); //create a timer instance *timer*
+auto timer0 = timer_create_default(); //create a timer instance *timer*
+auto timer1 = timer_create_default(); //create a timer instance *timer*
+auto timer2 = timer_create_default(); //create a timer instance *timer*
+unsigned long timer;
+bool init_ = false;
+bool stab = true;
+
 
 void setup() {
   Serial.begin(9600);
   // hovercraft.leftSensor = createSensor(PD3);
   // hovercraft.rightSensor = createSensor(PD4);
   initPVM();
+  timer = millis();
   //thresholdDist = 13.5; //Threshold distance in cm that defines when to start turning
   //initIMU();
   //delay(3000);
@@ -35,22 +42,46 @@ void loop() {
   // Serial.print("Right Sensor: ");
   // Serial.print(hovercraft.rightSensor.distanceCM);
   // Serial.println(" (CM)");
+  // delay(500);
 
 
-  timer.tick();
-  //Move forward at 50ms
-  timer.at(50, start);
-  timer.every(2500, stabilize); //stabilize every 2500ms
-  timer.every(3250, moveForward); //go back to moving forward every 3250ms
-  timer.every(100, checkSensors); //check sensors every 100ms
-  if (getTurning()){
-    timer.in(2500, stopTurn);
+
+  unsigned long currentTime = millis();
+  unsigned long time_elapsed = currentTime - timer;
+  unsigned long time_change = 2000;
+  if (init_){
+    moveForward();
+    stab=false;
   }
+  if (time_elapsed >=time_change){
+    
+    if (!stab){
+      stabilize();
+      stab=true;
+      time_change = 500; //stabilize for 1000ms 
+    }
+    else{
+      moveForward();
+      stab=false;
+      time_change = 1000; //move forward for 3000ms 
+    }
+    timer = millis();
+  }
+  checkSensors();
+  
+  //Move forward at 50ms
+  //timer1.in(500, start);
+  //timer1.every(30000, stabilize); //stabilize every 
+  //timer1.every(20000, moveForward); //stabilize every 
+
+  //timer.every(100, checkSensors); //check sensors every 100ms
+  //if (getTurning()){
+  //  timer.in(2500, stopTurn);
+  //}
 
 
 
-  // spinLiftFan();
-  // spinThrustFan();
-  delay(500);
+  spinLiftFan();
+  spinThrustFan();
 
 }
