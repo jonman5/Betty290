@@ -14,13 +14,10 @@ void spinThrustFan() {
   analogWrite(THRUST_FAN_PIN, 200
   );
 }
-void setServoAngle(int angle) {
+void setServoAngle(float angle) {
   angle = angle > 180 ? 180 : angle;
   angle = angle < 0 ? 0 : angle;
-  SERVO_PIN = 1100 + ((int) 3550 * (((float) angle) / 180.0f));
-}
-void setServoPin(int value) {
-  SERVO_PIN = value;
+  SERVO_PIN = 1150 + ((int) 3550 * (angle / 180.0f));
 }
 void spinLiftFan() {
   LIFT_FAN_PIN = 65535;

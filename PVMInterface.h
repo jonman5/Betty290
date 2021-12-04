@@ -4,6 +4,5 @@
 
 void initPVM();
 void spinLiftFan();
-void setServoAngle(int angle);
-void setServoPin(int value);
+void setServoAngle(float angle);
 void spinThrustFan();
