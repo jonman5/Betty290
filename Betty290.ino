@@ -85,14 +85,14 @@ void loop() {
       }
       break;
     case Y_MOVE:
-      if(direction == FRONT) {
-        setServoAngle(60);
-      } else {
-        setServoAngle(120); 
-      }
       if (getTimer() > 2000) {
         state = X_MOVE;
         direction = (direction == FRONT) ? BACK : FRONT;
+      }
+      else if(direction == FRONT) {
+        setServoAngle(60);
+      } else {
+        setServoAngle(120); 
       }
       break;
   }
